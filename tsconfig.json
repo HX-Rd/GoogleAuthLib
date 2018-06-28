@@ -15,6 +15,14 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "google-auth-lib": [
+        "dist/google-auth-lib"
+      ],
+      "google-auth-lib/*": [
+        "dist/google-auth-lib/*"
+      ]
+    }
   }
 }
