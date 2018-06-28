@@ -22,6 +22,9 @@ export class StorageBrige implements Storage {
         if (typeof ret === 'string') {
             return ret;
         }
+        if (typeof ret === 'number') {
+            return ret.toString();
+        }
         return null;
     }
     key(index: number): string | null {
@@ -96,7 +99,7 @@ export class GoogleAuthService extends OAuthService {
         private storageBrige: StorageBrige,
         validationHandler: ValidationHandler,
         authConfig: AuthConfig,
-        urlHelperService: UrlHelperService
+        urlHelperService: UrlHelperService,
     ) {
         super(ngZone, httpClient, storageBrige, validationHandler, authConfig, urlHelperService)
     }
@@ -110,14 +113,17 @@ export class GoogleAuthService extends OAuthService {
             return tokenRaw;
         }
         let expires = +this.storageBrige.getItem('expires');
-        let now = Math.floor(Date.now() / 1000);
-        if (now > expires) {
-            this.logOut();
-            this.storageBrige.removeItem('authuser');
-            this.storageBrige.removeItem('expires');
-            this.storageBrige.removeItem('prompt');
-            this.storageBrige.removeItem('state');
-            this.storageBrige.removeItem('token_type');
+        if (expires !== 0) {
+            let now = Math.floor(Date.now());
+            if (now > expires) {
+                this.logOut();
+                this.storageBrige.removeItem('authuser');
+                this.storageBrige.removeItem('expires');
+                this.storageBrige.removeItem('prompt');
+                this.storageBrige.removeItem('state');
+                this.storageBrige.removeItem('token_type');
+                this.initImplicitFlow();
+            }
         }
         let tokenRaw = super.getAccessToken();
         if(tokenRaw !== undefined) {
@@ -125,6 +131,12 @@ export class GoogleAuthService extends OAuthService {
             return token;
         }
         return tokenRaw;
+    }
+    getAccessTokenExpiration(): number {
+        if(this.storageBrige !== undefined) {
+            return +this.storageBrige.getItem('expires');
+        }
+        return super.getAccessTokenExpiration();
     }
 
     logOut() {

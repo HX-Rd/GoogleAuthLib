@@ -19,7 +19,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
     BrowserModule,
     AppRoutingModule,
     GoogleAuthLibModule.withConfig({
-      clientId: '458297116178-ek6i99fmr6mg3hfbobnm1o1fb57lhjgn.apps.googleusercontent.com',
+      clientId: '',
       redirectUrl: 'http://localhost:4200/authcallback',
       redirectAfterLogin: '/success',
       redirectAfterLogout: '/'

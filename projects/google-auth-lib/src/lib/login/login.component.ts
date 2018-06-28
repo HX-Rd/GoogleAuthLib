@@ -44,7 +44,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.accessTokenSubject.subscribe((v) => {
         this.isLoggedIn = v;
-        this.changeDetectorRef.detectChanges();
+        if(!this.changeDetectorRef['destroyed']) {
+          this.changeDetectorRef.detectChanges();
+        }
     });
     let redirect = `/${this.config.redirectUrl.split('/').pop()}`;
     if (this.router.routerState.snapshot.url.startsWith(redirect) && this.router.routerState.snapshot.root.fragment !== "") {
@@ -53,7 +55,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         let key = keyPair[0];
         let value = keyPair[1];
         if(key === "expires_in") {
-          let expires = Math.floor(Date.now() / 1000) + value;
+          let expires = Math.floor(Date.now()) + (+value * 1000);
           this.localStorageService.set('expires', expires);
         } else {
           this.localStorageService.set(key, value);
