@@ -18,7 +18,7 @@ import { GoogleAuthService } from 'google-auth-lib';
     BrowserModule,
     AppRoutingModule,
     GoogleAuthLibModule.withConfig({
-      clientId: '458297116178-ek6i99fmr6mg3hfbobnm1o1fb57lhjgn.apps.googleusercontent.com',
+      clientId: '',
       redirectUrl: 'http://localhost:4200/authcallback',
       redirectAfterLogin: '/success',
       redirectAfterLogout: '/'
