@@ -34,7 +34,6 @@ import { SuccessComponent } from './success/success.component';
 
 import { GoogleAuthLibModule } from 'google-auth-lib';
 import { GoogleAuthService } from 'google-auth-lib';
-import { OAuthService } from 'angular-oauth2-oidc';
 
 @NgModule({
   declarations: [
@@ -51,13 +50,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
       redirectAfterLogout: '/'
     })
   ],
-  // This is needed because of some AOT issues
-  providers: [
-    {
-      provide: GithubAuthService, 
-      useExisting: OAuthService
-    },
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
