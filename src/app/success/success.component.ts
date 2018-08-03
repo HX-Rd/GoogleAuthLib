@@ -13,7 +13,6 @@ export class SuccessComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.googleService.getAccessToken();
+    console.log(this.googleService.getUserInfo());
   }
-
 }

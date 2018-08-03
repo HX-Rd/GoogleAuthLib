@@ -1,77 +1,90 @@
-import { BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { Component, OnInit, AfterViewInit, Inject } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, Inject, TemplateRef, ContentChild, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ChangeDetectorRef } from '@angular/core'
 
-import { OAuthService } from "angular-oauth2-oidc";
-import { LocalStorageService } from 'angular-2-local-storage';
 
 import { IClientConfig } from '../client-config.interface';
+import { LoadingViewService } from '../services/loading-view.service';
+import { GoogleAuthService } from '../services/google-auth.service';
 
 @Component({
   selector: '[ga-login]',
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  host: {
+    '(click)': "handleClick($event)"
+  }
 })
-export class LoginComponent implements OnInit, AfterViewInit {
-  redirectAfterLogin: string;
+export class LoginComponent implements OnInit, OnDestroy {
+  @ContentChild('login') loginContent: TemplateRef<any>;
+  @ContentChild('logout') logoutContent: TemplateRef<any>;
+  @ContentChild('loading') loadingContent: TemplateRef<any>;
+  @ViewChild('defaultLogin') defaultLoginContent: TemplateRef<any>;
+  @ViewChild('defaultLogout') defaultLogoutContent: TemplateRef<any>;
+  @ViewChild('defaultLoading') defaultLoadingContent: TemplateRef<any>;
+
+  activeLoginContent: TemplateRef<any>;
+  activeLogoutContent: TemplateRef<any>;
+  activeLoadingContent: TemplateRef<any>;
+  activeTemplate: TemplateRef<any>;
+
   redirectAfterLogout: string;
-  isLoggedIn: boolean;
-  accessTokenSubject: BehaviorSubject<boolean>;
-  codeRedirectUrl: string;
+  loggedInSubscription: Subscription;
 
   constructor(
     @Inject('CLIENT_CONFIG') private config: IClientConfig,
-    private oauthService: OAuthService,
-    private localStorageService: LocalStorageService,
+    private googleService: GoogleAuthService,
     private router: Router,
-    private changeDetectorRef: ChangeDetectorRef,
+    private loadingViewService: LoadingViewService
   ) {
-    this.redirectAfterLogin = (config.redirectAfterLogin === undefined) ? '/' : config.redirectAfterLogin;
     this.redirectAfterLogout = config.redirectAfterLogout;
-
-    //this.codeRedirectUrl = config.codeRedirectUrl;
   }
 
   ngOnInit() {
-    this.accessTokenSubject = new BehaviorSubject<boolean>(this.localStorageService.get('access_token') !== null);
-    this.localStorageService.setItems$.pipe(filter((e) =>
-      e.key === 'access_token'
-    )).subscribe(() => this.accessTokenSubject.next(true));
-    this.localStorageService.setItems$.subscribe(() => this.accessTokenSubject.next(true));
+    this.activeLoginContent = this.loginContent === undefined
+      ? this.defaultLoginContent
+      : this.loginContent;
+    this.activeLogoutContent = this.logoutContent === undefined
+      ? this.defaultLogoutContent
+      : this.logoutContent;
+    this.activeLoadingContent = this.loadingContent === undefined
+      ? this.defaultLoadingContent
+      : this.loadingContent;
+
+    this.loadingViewService.loadingView = this.activeLoadingContent;
+
+    this.activeTemplate = this.googleService.isLoggedInSubject().getValue()
+      ? this.activeLogoutContent
+      : this.activeLoginContent;
+
+    this.loggedInSubscription = this.googleService.isLoggedInSubject().subscribe(
+      (isLoggedIn: boolean) => {
+        this.activeTemplate = isLoggedIn
+          ? this.activeLogoutContent
+          : this.activeLoginContent;
+      }
+    )
   }
 
-  ngAfterViewInit() {
-    this.accessTokenSubject.subscribe((v) => {
-        this.isLoggedIn = v;
-        if(!this.changeDetectorRef['destroyed']) {
-          this.changeDetectorRef.detectChanges();
-        }
-    });
-    let redirect = `/${this.config.redirectUrl.split('/').pop()}`;
-    if (this.router.routerState.snapshot.url.startsWith(redirect) && this.router.routerState.snapshot.root.fragment !== "") {
-      this.router.routerState.snapshot.root.fragment.split('&').forEach((hash) => {
-        let keyPair = hash.split('=');
-        let key = keyPair[0];
-        let value = keyPair[1];
-        if(key === "expires_in") {
-          let expires = Math.floor(Date.now()) + (+value * 1000);
-          this.localStorageService.set('expires', expires);
-        } else {
-          this.localStorageService.set(key, value);
-        }
-      })
-      this.router.navigate([this.redirectAfterLogin]);
+  ngOnDestroy(): void {
+    this.loggedInSubscription.unsubscribe();
+  }
+
+
+  handleClick(event) {
+    if(this.googleService.isLoggedInSubject().getValue()) {
+      this.logout();
+    }
+    else {
+      this.login();
     }
   }
 
   login() {
-    this.oauthService.initImplicitFlow();
+    this.googleService.startImplicitFlow();
   }
 
   logout() {
-    this.oauthService.logOut();
-    this.isLoggedIn = false;
+    this.googleService.logOut();
     if (this.redirectAfterLogout) {
       this.router.navigate([this.redirectAfterLogout]);
     }

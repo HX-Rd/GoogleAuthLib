@@ -6,8 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NgZone } from '@angular/core';
 
-import { LocalStorageModule } from 'angular-2-local-storage';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { WebStorageModule } from 'ngx-store';
+import { LocalStorageService } from 'ngx-store';
 
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { OAuthService } from 'angular-oauth2-oidc';
@@ -15,39 +15,36 @@ import { ValidationHandler } from 'angular-oauth2-oidc';
 import { JwksValidationHandler } from 'angular-oauth2-oidc';
 import { UrlHelperService } from 'angular-oauth2-oidc';
 
-import { OAuthFactory } from './google-auth.service';
-import { StorageBrigeFactory } from './google-auth.service';
-import { StorageBrige } from './google-auth.service';
+import { GoogleAuthFactory } from './factories/injection-factories';
+import { StorageBrigeFactory } from './factories/injection-factories';
+import { StorageBrige } from './services/storage-bridge.service';
 
 import { IClientConfig } from './client-config.interface';
 import { LoginComponent } from './login/login.component';
 
-import { GoogleAuthService } from './google-auth.service';
+import { GoogleAuthService } from './services/google-auth.service';
+import { CallbackComponent } from './callback/callback.component';
 
 @NgModule({
   imports: [
     CommonModule,
     HttpClientModule,
     OAuthModule,
-    LocalStorageModule.withConfig({
-      storageType: 'localStorage',
-      prefix: '',
-      notifyOptions: {
-        setItem: true
-      }
-    })
+    WebStorageModule
   ],
   declarations: [
-    LoginComponent
+    LoginComponent,
+    CallbackComponent
   ],
   entryComponents: [
-    LoginComponent
+    LoginComponent,
+    CallbackComponent
   ],
   exports: [
     LoginComponent,
   ]
 })
-export class GoogleAuthLibModule { 
+export class GoogleAuthLibModule {
   static withConfig(clientConfig: IClientConfig): ModuleWithProviders {
     return {
       ngModule: GoogleAuthLibModule,
@@ -56,7 +53,7 @@ export class GoogleAuthLibModule {
         { provide: ValidationHandler, useClass: JwksValidationHandler },
         LocalStorageService,
         UrlHelperService,
-        StorageBrige, {
+        {
           provide: StorageBrige,
           deps: [
             LocalStorageService
@@ -64,9 +61,8 @@ export class GoogleAuthLibModule {
           useFactory: StorageBrigeFactory,
           multi: false
         },
-
-        OAuthService, {
-          provide: OAuthService,
+        {
+          provide: GoogleAuthService,
           deps: [
             'CLIENT_CONFIG',
             Router,
@@ -74,17 +70,17 @@ export class GoogleAuthLibModule {
             HttpClient,
             StorageBrige,
             ValidationHandler,
-            UrlHelperService
+            UrlHelperService,
+            LocalStorageService
           ],
-          useFactory: OAuthFactory,
+          useFactory: GoogleAuthFactory,
           multi: false
         },
-        //{ provide: GoogleAuthService, useExisting: OAuthService }
       ]
     };
   }
 }
 
 export { IClientConfig } from './client-config.interface';
-export { GoogleAuthService } from './google-auth.service';
+export { GoogleAuthService } from './services/google-auth.service';
 export { LoginComponent } from './login/login.component';

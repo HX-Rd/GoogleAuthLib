@@ -8,7 +8,6 @@ import { SuccessComponent } from './success/success.component';
 
 import { GoogleAuthLibModule } from 'google-auth-lib';
 import { GoogleAuthService } from 'google-auth-lib';
-import { OAuthService } from 'angular-oauth2-oidc';
 
 @NgModule({
   declarations: [
@@ -19,18 +18,13 @@ import { OAuthService } from 'angular-oauth2-oidc';
     BrowserModule,
     AppRoutingModule,
     GoogleAuthLibModule.withConfig({
-      clientId: '',
+      clientId: '458297116178-ek6i99fmr6mg3hfbobnm1o1fb57lhjgn.apps.googleusercontent.com',
       redirectUrl: 'http://localhost:4200/authcallback',
       redirectAfterLogin: '/success',
       redirectAfterLogout: '/'
     })
   ],
-  providers: [
-    {
-      provide: GoogleAuthService, 
-      useExisting: OAuthService
-    },
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
