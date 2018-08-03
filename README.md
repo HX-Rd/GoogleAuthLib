@@ -1,4 +1,4 @@
-# GithubAuthLib
+# GoogleAuthLib
 
 Google Authentication library for Angular 6
 
@@ -82,7 +82,7 @@ This is much like the `redirectAfterLogin` only for when we logout.
 
 ### scopes
 *Optional*   
-*Default is an array with one value 'user'*   
+*Default is an array with these values 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'*   
 This is an array of scopes to request when doing the login. For full list of supported scope values take a look at githubs documentation [Github scopes](https://developer.github.com/apps/building-oauth-apps/understanding-scopes-for-oauth-apps/)
 
 ## Using the login component
