@@ -11,12 +11,12 @@ Also, the plugin dynamically creates a route that handles the callbacks from goo
 The library provides one module `GoogleAuthLibModule`, that includes on component   
 `Login` and one service   
 `GoogleAuthService`.   
-The login compenent's selector is `ga-login`
+The login compenent's selector is an attribute selector and is `[ga-login]`
 
 ## Dependencies
-The library has two peer dependencies that you have to install, `"angular-2-local-storage": "^2.0.0"` and `"angular-oauth2-oidc": "^4.0.2"`, to install them simply run these commands at the root of your angular repo.   
+The library has two peer dependencies that you have to install, `"ngx-store": "^2.0.0"` and `"angular-oauth2-oidc": "^4.0.2"`, to install them simply run these commands at the root of your angular repo.   
    
-`npm install angular-2-local-storage`   
+`npm install ngx-store`   
 `npm install angular-oauth2-oidc`   
    
 You should also setup `AppRoutingModule` in your root module since the library uses routing.
@@ -66,11 +66,11 @@ Lets go over the config variables
 
 ### clientId
 *Required*    
-This is your google clientId. You can create an app here [Github Apis](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) and there is a lot of documentation online if you run into trouble.
+This is your google clientId. You can create an app here [Google console](https://console.developers.google.com/) and there is a lot of documentation online if you run into trouble.
 
 ### redirectUrl
 *Required*    
-Where your token is redirected from github, you will have to setup this redirect url on your app. You do that under your github account -> go to settings -> go to developer settings -> select your app and setup your callback. This is also where you get your clientId and clientSecret. The base address should be your app host ( localhost:4200 usually when deving ) and the endpoint to where the token is recived. In the example we use `authcallback`, this value does not matter so much sine the library takes care of registering this route for you and hooks upp the `LoginComnent` for you on that route. Just make sure that the route is registered on the github app.
+Where your token is redirected from google, you will have to setup this redirect url on your app. [Google console](https://console.developers.google.com/) -> Select your app -> go to Credentials -> Create a OAuth client ID -> Select a Web applicaiton. This is where you assign your callback in the Authorized redirect URIs. The base address should be your app host ( localhost:4200 usually when deving ) and the endpoint to where the token is recived. In the example we use `authcallback`, this value does not matter so much sine the library takes care of registering this route for you and hooks upp the `LoginComnent` for you on that route. Just make sure that the route is registered on the github app. So for the example we used above the value would be `http://localhost:4200/authcallback`
 
 ### redirectAfterLogin
 *Required*    
