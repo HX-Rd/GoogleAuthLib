@@ -75,35 +75,10 @@ export class CallbackComponent implements OnInit, AfterViewInit, OnDestroy {
       this.localStorageService.set('google_user_info', JSON.stringify(user));
       this.router.navigate([this.redirectAfterLogin]);
     });
-
-    /*let redirect = `/${this.config.redirectUrl.split('/').pop()}`;
-    this.routeUrlSubscription = this.activatedRoute.url.subscribe(
-      (url: UrlSegment[]) => {
-        if(redirect === `/${url[0].path}`) {
-          this.fragmentSubscription = this.activatedRoute.fragment.subscribe(
-            (fragment: string) => {
-              fragment.split('&').forEach((hash) => {
-                let keyPair = hash.split('=');
-                let key = keyPair[0];
-                let value = keyPair[1];
-                if(key === "expires_in") {
-                  let expires = Math.floor(Date.now()) + (+value * 1000);
-                  this.localStorageService.set('expires', expires);
-                } else {
-                  this.localStorageService.set(key, value);
-                }
-              })
-              this.router.navigate([this.redirectAfterLogin]);
-            }
-          )
-        }
-      }
-    );*/
   }
 
   ngOnDestroy(): void {
     this.routeUrlSubscription.unsubscribe();
-    //this.fragmentSubscription.unsubscribe();
   }
 
 }
