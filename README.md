@@ -136,7 +136,7 @@ And that is really all you need, but you can provide your own templates if you w
 ```
 The default templates are just a link with login and logout as text, and nothing for the loading. But if you want you can style it your self by appling your own templates. NOTE, the `loading` css class in the template is not needed, just a demonstration on how you could style it your self.
 
-### GithubAuthService
+### GoogleAuthService
 #### getAccessToken(): string
 Get the access token for the logged in user
 #### getUserInfo(): User
