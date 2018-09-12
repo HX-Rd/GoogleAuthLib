@@ -1,9 +1,6 @@
 import { Subscription } from 'rxjs';
-import { Component, OnInit, Inject, TemplateRef, ContentChild, ViewChild, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, TemplateRef, ContentChild, ViewChild, OnDestroy } from '@angular/core';
 
-
-import { IClientConfig } from '../client-config.interface';
 import { LoadingViewService } from '../services/loading-view.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 
@@ -27,16 +24,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   activeLoadingContent: TemplateRef<any>;
   activeTemplate: TemplateRef<any>;
 
-  redirectAfterLogout: string;
   loggedInSubscription: Subscription;
 
   constructor(
-    @Inject('CLIENT_CONFIG') private config: IClientConfig,
     private googleService: GoogleAuthService,
-    private router: Router,
     private loadingViewService: LoadingViewService
   ) {
-    this.redirectAfterLogout = config.redirectAfterLogout;
   }
 
   ngOnInit() {
@@ -52,11 +45,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.loadingViewService.loadingView = this.activeLoadingContent;
 
-    this.activeTemplate = this.googleService.isLoggedInSubject().getValue()
+    this.activeTemplate = this.googleService.isLoggedInSubject.getValue()
       ? this.activeLogoutContent
       : this.activeLoginContent;
 
-    this.loggedInSubscription = this.googleService.isLoggedInSubject().subscribe(
+    this.loggedInSubscription = this.googleService.isLoggedInSubject.subscribe(
       (isLoggedIn: boolean) => {
         this.activeTemplate = isLoggedIn
           ? this.activeLogoutContent
@@ -71,7 +64,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
   handleClick(event) {
-    if(this.googleService.isLoggedInSubject().getValue()) {
+    if(this.googleService.isLoggedInSubject.getValue()) {
       this.logout();
     }
     else {
@@ -80,14 +73,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login() {
-    this.googleService.startImplicitFlow();
+    this.googleService.login();
   }
 
   logout() {
     this.googleService.logOut();
-    if (this.redirectAfterLogout) {
-      this.router.navigate([this.redirectAfterLogout]);
-    }
   }
 }
 

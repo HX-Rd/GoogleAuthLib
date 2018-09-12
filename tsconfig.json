@@ -18,10 +18,10 @@
     ],
     "paths": {
       "google-auth-lib": [
-        "projects/google-auth-lib/src/public_api"
+        "dist/google-auth-lib"
       ],
       "google-auth-lib/*": [
-        "projects/google-auth-lib/src/public_api/*"
+        "dist/google-auth-lib/*"
       ]
     }
   }

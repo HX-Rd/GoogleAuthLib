@@ -59,9 +59,7 @@ export class CallbackComponent implements OnInit, AfterViewInit, OnDestroy {
             let expires = Math.floor(Date.now()) + (+value * 1000);
             this.localStorageService.set('expires', expires);
           }
-          else {
-            this.localStorageService.set(key, value);
-          }
+          this.localStorageService.set(key, value);
         });
         const options = {
           headers: new HttpHeaders({

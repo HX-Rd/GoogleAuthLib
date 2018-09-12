@@ -3,5 +3,5 @@ export interface IClientConfig{
     clientId: string;
     redirectAfterLogin?: string;
     redirectAfterLogout?: string;
-    scopes?: string;
+    scopes?: string[];
 }
