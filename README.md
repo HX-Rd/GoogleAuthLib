@@ -138,7 +138,7 @@ You can subscribe to this BehaviorSubject to be notified when a user is logged i
 #### accessTokenSubject: BehaviorSubject
 You can subscribe to this BehaviorSubject to get the access token when it arrives
 #### userInfoSubject: BehaviorSubject
-You can subscribe to this BehaviorSubject to get the user info when it arrives. See the User [here](https://github.com/HX-Rd/GoogleAuthLib/blob/master/projects/google-auth-lib/src/lib/models/user.ts#L83:3) 
+You can subscribe to this BehaviorSubject to get the user info when it arrives. See the User [here](https://github.com/HX-Rd/GoogleAuthLib/blob/master/projects/google-auth-lib/src/lib/models/user.ts) 
 #### logOut()
 Logout, you can log the user out programmatically if that is what is needed, but the loggin component uses this when a user wants to log out.
 #### login() 
