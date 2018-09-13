@@ -3,9 +3,9 @@
 Google Authentication library for Angular 6
 
 ## What does this library do?
-This library is a authentication library for Google signin, and the main objective is to make it as easy as possible. Its built on top of
-[angular-oauth2-oidc](https://github.com/manfredsteyer/angular-oauth2-oidc) and it does all the heavy lifting. This library just fills in some of the variables to use google, as well as overwrite some functions in order to support the non JWT tokens that google uses for access tokens.   
-Also, the plugin dynamically creates a route that handles the callbacks from google and parses the token, as well as providing you with a sotre for the tokens.
+This library is a authentication library for Google signin, and the main objective is to make it as easy as possible.
+The plugin dynamically creates a route that handles the callbacks from google and parses the token, as well as providing you with a store for the tokens.   
+You can also provide templates for login, logout and loading, see examples below.
 
 ## What does the library provide
 The library provides one module `GoogleAuthLibModule`, that includes on component   
@@ -14,10 +14,9 @@ The library provides one module `GoogleAuthLibModule`, that includes on componen
 The login compenent's selector is an attribute selector and is `[ga-login]`
 
 ## Dependencies
-The library has two peer dependencies that you have to install, `"ngx-store": "^2.0.0"` and `"angular-oauth2-oidc": "^4.0.2"`, to install them simply run these commands at the root of your angular repo.   
+The library has two peer dependencies that you have to install, `"ngx-store": "^2.0.0"` to install them simply run the command at the root of your angular repo.   
    
 `npm install ngx-store`   
-`npm install angular-oauth2-oidc`   
    
 You should also setup `AppRoutingModule` in your root module since the library uses routing.
 
@@ -134,9 +133,13 @@ The default templates are just a link with login and logout as text, and nothing
 Get the access token for the logged in user
 #### getUserInfo(): User
 Gets the user info for the logged in user. The endpoint that is called to get that information is [UserInfoEndpoint](https://www.googleapis.com/plus/v1/people/me) and you can read more about it here [Google Users Documentation](https://developers.google.com/+/web/api/rest/latest/people/get)
-#### isLoggedInSubject(): BehaviorSubject<boolean>
+#### isLoggedInSubject: BehaviorSubject<boolean>
 You can subscribe to this BehaviorSubject to be notified when a user is logged in
+#### accessTokenSubject: BehaviorSubject
+You can subscribe to this BehaviorSubject to get the access token when it arrives
+#### userInfoSubject: BehaviorSubject
+You can subscribe to this BehaviorSubject to get the user info when it arrives. See the User [here](https://github.com/HX-Rd/GoogleAuthLib/blob/master/projects/google-auth-lib/src/lib/models/user.ts#L83:3) 
 #### logOut()
 Logout, you can log the user out programmatically if that is what is needed, but the loggin component uses this when a user wants to log out.
-#### startImplicitFlow() 
+#### login() 
 Starts the login process, used in the login component.
